@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: smart-library-backend
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/smart_library
+    username: postgres
+    password: Sanjaya@2525
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+    show-sql: true
+
+    properties:
+      hibernate:
+        format_sql: true
+
+server:
+  port: 8080

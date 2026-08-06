@@ -5,7 +5,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/smart_library
     username: postgres
-    password: Sanjaya@2525
+    password: YOUR_DATABASE_PASSWORD
 
   jpa:
     hibernate:
@@ -13,9 +13,18 @@ spring:
 
     show-sql: true
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: YOUR_EMAIL@gmail.com
+    password: YOUR_APP_PASSWORD
+
     properties:
-      hibernate:
-        format_sql: true
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 server:
   port: 8080

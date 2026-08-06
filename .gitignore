@@ -1,0 +1,12 @@
+HELP.md
+target/
+
+### IntelliJ ###
+.idea/
+*.iml
+
+### Local configuration ###
+backend/src/main/resources/application.yaml
+
+### Logs ###
+*.log

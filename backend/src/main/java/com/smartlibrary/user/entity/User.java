@@ -1,4 +1,4 @@
-package com.smartlibrary.entity;
+package com.smartlibrary.user.entity;
 
 import com.smartlibrary.enums.Role;
 import com.smartlibrary.enums.UserStatus;

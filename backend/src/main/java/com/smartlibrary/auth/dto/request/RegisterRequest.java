@@ -1,4 +1,4 @@
-package com.smartlibrary.dto.request;
+package com.smartlibrary.auth.dto.request;
 
 import com.smartlibrary.enums.Role;
 import jakarta.validation.constraints.Email;

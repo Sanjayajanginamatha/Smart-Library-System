@@ -1,6 +1,6 @@
-package com.smartlibrary.repository;
+package com.smartlibrary.user.repository;
 
-import com.smartlibrary.entity.User;
+import com.smartlibrary.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

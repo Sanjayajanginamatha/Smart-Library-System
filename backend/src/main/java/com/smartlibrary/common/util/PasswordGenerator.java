@@ -1,4 +1,4 @@
-package com.smartlibrary.util;
+package com.smartlibrary.common.util;
 
 import java.security.SecureRandom;
 

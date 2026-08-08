@@ -1,4 +1,4 @@
-package com.smartlibrary.dto.response;
+package com.smartlibrary.auth.dto.response;
 
 import lombok.*;
 
@@ -9,9 +9,14 @@ import lombok.*;
 @Builder
 public class LoginResponse {
 
+    private boolean success;
+
+    private String message;
+
     private String token;
+
+    private boolean firstLogin;
 
     private String role;
 
-    private boolean firstLogin;
 }

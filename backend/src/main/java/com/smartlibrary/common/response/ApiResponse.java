@@ -1,4 +1,4 @@
-package com.smartlibrary.dto.response;
+package com.smartlibrary.common.response;
 
 import lombok.*;
 

@@ -2,6 +2,8 @@ package com.smartlibrary.reader.service;
 
 import com.smartlibrary.department.entity.Department;
 import com.smartlibrary.department.repository.DepartmentRepository;
+import com.smartlibrary.exception.BusinessException;
+import com.smartlibrary.exception.ResourceNotFoundException;
 import com.smartlibrary.reader.dto.request.ReaderRequest;
 import com.smartlibrary.reader.entity.Reader;
 import com.smartlibrary.reader.repository.ReaderRepository;
@@ -23,18 +25,20 @@ public class ReaderService {
     public Reader createReader(ReaderRequest request) {
 
         if (readerRepository.existsByUsn(request.getUsn())) {
-            throw new RuntimeException("USN already exists");
+            throw new BusinessException("USN already exists");
         }
 
         if (readerRepository.existsByUserId(request.getUserId())) {
-            throw new RuntimeException("User already has a Reader profile");
+            throw new BusinessException("User already has a Reader profile");
         }
 
         User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
 
         Department department = departmentRepository.findById(request.getDepartmentId())
-                .orElseThrow(() -> new RuntimeException("Department not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Department not found"));
 
         Reader reader = Reader.builder()
                 .user(user)
@@ -52,12 +56,14 @@ public class ReaderService {
 
     public Reader getReaderById(Long id) {
         return readerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Reader not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Reader not found"));
     }
 
     public Reader getReaderByUsn(String usn) {
         return readerRepository.findByUsn(usn)
-                .orElseThrow(() -> new RuntimeException("Reader not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Reader not found"));
     }
 
     public Reader updateReader(Long id, ReaderRequest request) {
@@ -66,11 +72,13 @@ public class ReaderService {
 
         if (!existingReader.getUsn().equals(request.getUsn())
                 && readerRepository.existsByUsn(request.getUsn())) {
-            throw new RuntimeException("USN already exists");
+
+            throw new BusinessException("USN already exists");
         }
 
         Department department = departmentRepository.findById(request.getDepartmentId())
-                .orElseThrow(() -> new RuntimeException("Department not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Department not found"));
 
         existingReader.setUsn(request.getUsn());
         existingReader.setDepartment(department);

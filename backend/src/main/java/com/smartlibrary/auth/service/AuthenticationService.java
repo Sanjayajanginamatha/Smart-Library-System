@@ -7,6 +7,7 @@ import com.smartlibrary.auth.jwt.JwtService;
 import com.smartlibrary.common.response.ApiResponse;
 import com.smartlibrary.common.util.PasswordGenerator;
 import com.smartlibrary.enums.UserStatus;
+import com.smartlibrary.exception.ResourceNotFoundException;
 import com.smartlibrary.mail.EmailService;
 import com.smartlibrary.user.entity.User;
 import com.smartlibrary.user.service.UserService;
@@ -70,7 +71,8 @@ public class AuthenticationService {
         );
 
         User user = userService.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
 
         String token = jwtService.generateToken(user.getEmail());
 

@@ -6,6 +6,8 @@ import com.smartlibrary.borrowing.dto.request.BorrowingRequest;
 import com.smartlibrary.borrowing.entity.BorrowingRecord;
 import com.smartlibrary.borrowing.repository.BorrowingRecordRepository;
 import com.smartlibrary.enums.BorrowingStatus;
+import com.smartlibrary.exception.BusinessException;
+import com.smartlibrary.exception.ResourceNotFoundException;
 import com.smartlibrary.reader.entity.Reader;
 import com.smartlibrary.reader.repository.ReaderRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,10 +34,12 @@ public class BorrowingService {
     public BorrowingRecord issueBook(BorrowingRequest request) {
 
         Reader reader = readerRepository.findById(request.getReaderId())
-                .orElseThrow(() -> new RuntimeException("Reader not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Reader not found"));
 
         Book book = bookRepository.findById(request.getBookId())
-                .orElseThrow(() -> new RuntimeException("Book not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Book not found"));
 
         // Check whether the reader has already reached the borrowing limit
         long activeBorrowings =
@@ -45,14 +49,14 @@ public class BorrowingService {
                 );
 
         if (activeBorrowings >= MAX_BORROWING_LIMIT) {
-            throw new RuntimeException(
+            throw new BusinessException(
                     "Reader cannot borrow more than 5 books"
             );
         }
 
         // Check whether the book has available copies
         if (book.getAvailableCopies() <= 0) {
-            throw new RuntimeException(
+            throw new BusinessException(
                     "Book is currently unavailable"
             );
         }
@@ -68,7 +72,7 @@ public class BorrowingService {
                         .isPresent();
 
         if (alreadyBorrowed) {
-            throw new RuntimeException(
+            throw new BusinessException(
                     "Reader has already borrowed this book"
             );
         }
@@ -105,15 +109,19 @@ public class BorrowingService {
     public BorrowingRecord getBorrowingById(Long id) {
 
         return borrowingRecordRepository.findById(id)
-                .orElseThrow(
-                        () -> new RuntimeException("Borrowing record not found")
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Borrowing record not found"
+                        )
                 );
     }
 
     public List<BorrowingRecord> getBorrowingsByReader(Long readerId) {
 
         if (!readerRepository.existsById(readerId)) {
-            throw new RuntimeException("Reader not found");
+            throw new ResourceNotFoundException(
+                    "Reader not found"
+            );
         }
 
         return borrowingRecordRepository.findByReaderId(readerId);
@@ -132,7 +140,7 @@ public class BorrowingService {
         BorrowingRecord borrowingRecord = getBorrowingById(id);
 
         if (borrowingRecord.getStatus() == BorrowingStatus.RETURNED) {
-            throw new RuntimeException(
+            throw new BusinessException(
                     "Book has already been returned"
             );
         }

@@ -4,6 +4,8 @@ import com.smartlibrary.book.dto.request.BookRequest;
 import com.smartlibrary.book.entity.Book;
 import com.smartlibrary.book.repository.BookRepository;
 import com.smartlibrary.enums.BookStatus;
+import com.smartlibrary.exception.BusinessException;
+import com.smartlibrary.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +20,7 @@ public class BookService {
     public Book createBook(BookRequest request) {
 
         if (bookRepository.existsByIsbn(request.getIsbn())) {
-            throw new RuntimeException("ISBN already exists");
+            throw new BusinessException("ISBN already exists");
         }
 
         Book book = Book.builder()
@@ -40,13 +42,17 @@ public class BookService {
     }
 
     public Book getBookById(Long id) {
+
         return bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Book not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Book not found"));
     }
 
     public Book getBookByIsbn(String isbn) {
+
         return bookRepository.findByIsbn(isbn)
-                .orElseThrow(() -> new RuntimeException("Book not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Book not found"));
     }
 
     public Book updateBook(Long id, BookRequest request) {
@@ -55,7 +61,8 @@ public class BookService {
 
         if (!existingBook.getIsbn().equals(request.getIsbn())
                 && bookRepository.existsByIsbn(request.getIsbn())) {
-            throw new RuntimeException("ISBN already exists");
+
+            throw new BusinessException("ISBN already exists");
         }
 
         int issuedCopies =
@@ -65,7 +72,8 @@ public class BookService {
         int newTotalCopies = request.getTotalCopies();
 
         if (newTotalCopies < issuedCopies) {
-            throw new RuntimeException(
+
+            throw new BusinessException(
                     "Total copies cannot be less than currently issued copies"
             );
         }
@@ -76,10 +84,7 @@ public class BookService {
         existingBook.setPublisher(request.getPublisher());
         existingBook.setCategory(request.getCategory());
         existingBook.setTotalCopies(newTotalCopies);
-
-        existingBook.setAvailableCopies(
-                newTotalCopies - issuedCopies
-        );
+        existingBook.setAvailableCopies(newTotalCopies - issuedCopies);
 
         return bookRepository.save(existingBook);
     }

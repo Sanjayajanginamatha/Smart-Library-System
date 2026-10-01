@@ -4,6 +4,8 @@ import com.smartlibrary.department.dto.request.DepartmentRequest;
 import com.smartlibrary.department.dto.response.DepartmentResponse;
 import com.smartlibrary.department.entity.Department;
 import com.smartlibrary.department.repository.DepartmentRepository;
+import com.smartlibrary.exception.BusinessException;
+import com.smartlibrary.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,13 +20,13 @@ public class DepartmentService {
     public DepartmentResponse createDepartment(DepartmentRequest request) {
 
         if (departmentRepository.existsByName(request.getName())) {
-            throw new IllegalArgumentException(
+            throw new BusinessException(
                     "Department name already exists"
             );
         }
 
         if (departmentRepository.existsByCode(request.getCode())) {
-            throw new IllegalArgumentException(
+            throw new BusinessException(
                     "Department code already exists"
             );
         }
@@ -45,7 +47,7 @@ public class DepartmentService {
 
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() ->
-                        new IllegalArgumentException(
+                        new ResourceNotFoundException(
                                 "Department not found with id: " + id
                         )
                 );
@@ -67,7 +69,7 @@ public class DepartmentService {
 
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() ->
-                        new IllegalArgumentException(
+                        new ResourceNotFoundException(
                                 "Department not found with id: " + id
                         )
                 );
@@ -75,7 +77,7 @@ public class DepartmentService {
         if (!department.getName().equals(request.getName())
                 && departmentRepository.existsByName(request.getName())) {
 
-            throw new IllegalArgumentException(
+            throw new BusinessException(
                     "Department name already exists"
             );
         }
@@ -83,7 +85,7 @@ public class DepartmentService {
         if (!department.getCode().equals(request.getCode())
                 && departmentRepository.existsByCode(request.getCode())) {
 
-            throw new IllegalArgumentException(
+            throw new BusinessException(
                     "Department code already exists"
             );
         }
@@ -102,7 +104,7 @@ public class DepartmentService {
 
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() ->
-                        new IllegalArgumentException(
+                        new ResourceNotFoundException(
                                 "Department not found with id: " + id
                         )
                 );
